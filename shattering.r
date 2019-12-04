@@ -66,7 +66,6 @@ growth <- function(sample=1:15, R=2, iter=20) {
 }
 
 growth2 <- function(sample=1:15, R=2, iter=20) {
-
    S = NULL
    for (n in sample) {
 	cat("Sample of size ", n, "\n")
