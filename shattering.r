@@ -1,9 +1,14 @@
 
-shattering <- function(sample=1:15, R=2, iter=20) {
+sigmoid = function(x){
+	return( 1 / (1 + exp(-x)) );
+}
+
+shattering <- function(sample=1:15, R=2, iter=20, quiet=F) {
 
    S = NULL
    for (n in sample) {
-	cat("Sample of size ", n, "\n")
+		if(!quiet)
+			cat("Sample of size ", n, "\n")
 
 	# dataset
 	D = NULL
@@ -28,11 +33,12 @@ shattering <- function(sample=1:15, R=2, iter=20) {
    return (S)
 }
 
-growth <- function(sample=1:15, R=2, iter=20) {
+growth <- function(sample=1:15, R=2, iter=20, quiet=F) {
 
    S = NULL
    for (n in sample) {
-	cat("Sample of size ", n, "\n")
+	   if(!quiet)
+			cat("Sample of size ", n, "\n")
 
 	# dataset
 	D = NULL
@@ -48,8 +54,10 @@ growth <- function(sample=1:15, R=2, iter=20) {
 	for (i in 1:(iter*n^3)) {
 		# hyperplane
 		coeffs = runif(min=-3, max=3, n=R+1)
-		r = apply(D, 1, function(row) { coeffs %*% c(row, 1)} )
-		classification = sign(r)
+		r = apply(D, 1, function(row) { sigmoid(coeffs %*% c(row, 1)) } )
+		classification = rep(0, length(r))
+		classification[r <  0.5] = -1
+		classification[r >= 0.5] = 1
 
 		# Apply loss function
 		loss = as.numeric(classification == Y)
@@ -65,10 +73,11 @@ growth <- function(sample=1:15, R=2, iter=20) {
    return (S)
 }
 
-growth2 <- function(sample=1:15, R=2, iter=20) {
+growth2 <- function(sample=1:15, R=2, iter=20, quiet=F) {
    S = NULL
    for (n in sample) {
-	cat("Sample of size ", n, "\n")
+	   if(!quiet)
+			cat("Sample of size ", n, "\n")
 
 	# dataset
 	D = NULL
@@ -84,11 +93,10 @@ growth2 <- function(sample=1:15, R=2, iter=20) {
 	for (i in 1:(iter*n^3)) {
 		# hyperplane
 		coeffs = runif(min=-3, max=3, n=R+1)
-		r = apply(D, 1, function(row) { coeffs %*% c(row, 1)} )
-
+		r = apply(D, 1, function(row) { sigmoid(coeffs %*% c(row, 1)) } )
 		classification = rep(0, length(r))
-		classification[r <  -3] = -1
-		classification[r >= -3] = 1
+		classification[r <  0.05] = -1
+		classification[r >= 0.05] = 1
 
 		# Apply loss function
 		loss = as.numeric(classification == Y)
